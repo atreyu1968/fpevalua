@@ -22,6 +22,9 @@ jobs:
       - name: Materializar runtime
         run: bash bootstrap/materialize-runtime.sh
 
+      - name: Generar plantillas XLSX
+        run: node scripts/generate-templates.mjs
+
       - name: Verificar archivos esenciales
         run: |
           test -s src/server.mjs
@@ -29,6 +32,8 @@ jobs:
           test -s public/app.js
           test -s public/styles.css
           test -s data/tecnica-contable.json
+          test -s public/templates/Plantilla_Importacion_Instrumentos_FPEvalua_2.3.xlsx
+          test -s public/templates/Plantilla_Puente_Additio_FPEvalua_2.4.xlsx
           node --check src/server.mjs
           node --check src/db.mjs
           node --check public/app.js
