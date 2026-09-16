@@ -44,8 +44,6 @@ if [ "$SRC_DIR" != "$APP_REAL" ]; then
 fi
 cd "$APP_DIR"
 
-# Una clonación limpia desde GitHub contiene el runtime empaquetado en bootstrap/.
-# Se materializa antes de crear el servicio para impedir arranques incompletos.
 if [ ! -s src/server.mjs ] || [ ! -s src/db.mjs ] || [ ! -s public/app.js ] || [ ! -s public/styles.css ] || [ ! -s data/tecnica-contable.json ]; then
   echo "Materializando runtime de FPEvalúa..."
   bash bootstrap/materialize-runtime.sh
@@ -62,8 +60,9 @@ node --check src/server.mjs
 node --check src/db.mjs
 node --check public/app.js
 
-# Las plantillas XLSX se generan localmente para no depender de binarios en Git.
+# Las plantillas XLSX se generan localmente; Additio se restaura desde su plantilla completa.
 node scripts/generate-templates.mjs
+node scripts/generate-additio-template.mjs
 for TEMPLATE in public/templates/Plantilla_Importacion_Instrumentos_FPEvalua_2.3.xlsx public/templates/Plantilla_Puente_Additio_FPEvalua_2.4.xlsx; do
   if [ ! -s "$TEMPLATE" ]; then
     echo "ERROR: no se pudo generar $TEMPLATE"
@@ -94,7 +93,6 @@ chown www-data:www-data "$APP_DIR/.env"
 
 sed "s#ExecStart=/usr/bin/node#ExecStart=${NODE_BIN}#" deploy/fpevalua.service > /etc/systemd/system/fpevalua.service
 
-# Nginx queda limitado al loopback. Cloudflare Tunnel publicará 127.0.0.1:8080.
 if [ -f /etc/nginx/sites-available/fpevalua ]; then
   cp -a /etc/nginx/sites-available/fpevalua "/etc/nginx/sites-available/fpevalua.bak.$(date +%Y%m%d-%H%M%S)"
 fi
