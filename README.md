@@ -71,12 +71,43 @@ sudo bash deploy/install-ubuntu.sh
 
 El instalador:
 
+- reconstruye y verifica el runtime incluido en el repositorio antes de arrancar;
+- genera las plantillas XLSX necesarias;
 - crea `/opt/fpevalua/.env` si no existe;
 - genera secretos aleatorios para sesión y cifrado de la IA;
 - crea las carpetas persistentes;
 - instala el servicio `systemd`;
 - configura Nginx;
+- comprueba `/api/health` tanto directamente como a través de Nginx;
 - conserva SQLite, `.env`, adjuntos y SCORM durante las actualizaciones.
+
+## Reparar una instalación GitHub incompleta o fallida
+
+Si una instalación anterior terminó con un error similar a `Cannot find module '/opt/fpevalua/src/server.mjs'`, **no reinstales Ubuntu, Node.js ni Nginx**. Actualiza el repositorio y vuelve a ejecutar el instalador:
+
+```bash
+cd /opt/fpevalua
+sudo systemctl stop fpevalua 2>/dev/null || true
+git fetch origin
+git pull --ff-only
+sudo bash deploy/install-ubuntu.sh
+```
+
+Después verifica:
+
+```bash
+sudo systemctl status fpevalua --no-pager
+curl -fsS http://127.0.0.1:3000/api/health
+curl -fsS http://127.0.0.1:8080/api/health
+```
+
+Ambas llamadas deben devolver un JSON con `"ok": true`.
+
+Si no arranca, consulta:
+
+```bash
+sudo journalctl -u fpevalua -n 100 --no-pager
+```
 
 ## Acceso mediante Cloudflare Tunnel
 
@@ -148,13 +179,13 @@ sudo systemctl status cloudflared
 Prueba localmente Nginx:
 
 ```bash
-curl -I http://127.0.0.1:8080
+curl -fsS http://127.0.0.1:8080/api/health
 ```
 
 Y Node directamente, solo para diagnóstico:
 
 ```bash
-curl -I http://127.0.0.1:3000
+curl -fsS http://127.0.0.1:3000/api/health
 ```
 
 Cuando el túnel esté conectado, abre en el navegador el hostname configurado en Cloudflare.
