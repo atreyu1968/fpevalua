@@ -23,7 +23,9 @@ jobs:
         run: bash bootstrap/materialize-runtime.sh
 
       - name: Generar plantillas XLSX
-        run: node scripts/generate-templates.mjs
+        run: |
+          node scripts/generate-templates.mjs
+          node scripts/generate-additio-template.mjs
 
       - name: Verificar archivos esenciales
         run: |
