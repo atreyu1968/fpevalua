@@ -5,6 +5,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -12,14 +13,39 @@ permissions:
 jobs:
   selftests:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        test: [selftest, selftest:ai, selftest:v2, selftest:autograde, selftest:import, selftest:v22, selftest:v23, selftest:additio]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: ${{ matrix.test }}
-        run: npm run ${{ matrix.test }}
+
+      - name: Materializar runtime
+        run: bash bootstrap/materialize-runtime.sh
+
+      - name: Verificar archivos esenciales
+        run: |
+          test -s src/server.mjs
+          test -s src/db.mjs
+          test -s public/app.js
+          test -s public/styles.css
+          test -s data/tecnica-contable.json
+          node --check src/server.mjs
+          node --check src/db.mjs
+          node --check public/app.js
+
+      - name: Selftest base
+        run: npm run selftest
+      - name: Selftest IA
+        run: npm run selftest:ai
+      - name: Selftest v2
+        run: npm run selftest:v2
+      - name: Selftest autocorrección
+        run: npm run selftest:autograde
+      - name: Selftest importación
+        run: npm run selftest:import
+      - name: Selftest v2.2
+        run: npm run selftest:v22
+      - name: Selftest v2.3
+        run: npm run selftest:v23
+      - name: Selftest Additio
+        run: npm run selftest:additio
