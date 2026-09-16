@@ -1,0 +1,29 @@
+# Runtime secrets
+.env
+.env.*
+!.env.example
+
+# Runtime data
+/data/*.sqlite
+/data/*.sqlite-*
+/uploads/*
+/backups/*
+/scorm/*
+/logs/*
+
+# Keep runtime directories if manually created
+!/uploads/.gitkeep
+!/backups/.gitkeep
+!/scorm/.gitkeep
+!/logs/.gitkeep
+
+# Local/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+
+# Test/runtime leftovers
+/tmp/
+*.tmp

@@ -1,0 +1,25 @@
+name: FPEvalúa CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  selftests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test: [selftest, selftest:ai, selftest:v2, selftest:autograde, selftest:import, selftest:v22, selftest:v23, selftest:additio]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: ${{ matrix.test }}
+        run: npm run ${{ matrix.test }}

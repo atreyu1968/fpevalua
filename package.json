@@ -1,0 +1,22 @@
+{
+  "name": "fpevalua",
+  "version": "2.4.0",
+  "private": true,
+  "type": "module",
+  "description": "Plataforma integral de evaluación criterial por RA y CE para Formación Profesional",
+  "engines": {"node": ">=24"},
+  "scripts": {
+    "start": "node src/server.mjs",
+    "seed": "node scripts/seed.mjs",
+    "selftest": "node scripts/selftest.mjs",
+    "selftest:ai": "node scripts/selftest-ai.mjs",
+    "selftest:v2": "node scripts/selftest-v2.mjs",
+    "backup": "node scripts/backup.mjs",
+    "selftest:autograde": "node scripts/selftest-autograde.mjs",
+    "selftest:migration": "node scripts/selftest-migration.mjs",
+    "selftest:import": "node scripts/selftest-import.mjs",
+    "selftest:v22": "node scripts/selftest-v22.mjs",
+    "selftest:additio": "node scripts/selftest-additio.mjs",
+    "selftest:v23": "node scripts/selftest-v23.mjs"
+  }
+}

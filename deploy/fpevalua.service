@@ -1,0 +1,21 @@
+[Unit]
+Description=FPEvalua 2 - Evaluacion por RA y CE
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/fpevalua
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node /opt/fpevalua/src/server.mjs
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=full
+ReadWritePaths=/opt/fpevalua/data /opt/fpevalua/uploads /opt/fpevalua/backups /opt/fpevalua/scorm /opt/fpevalua/.env
+
+[Install]
+WantedBy=multi-user.target
