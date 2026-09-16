@@ -62,6 +62,15 @@ node --check src/server.mjs
 node --check src/db.mjs
 node --check public/app.js
 
+# Las plantillas XLSX se generan localmente para no depender de binarios en Git.
+node scripts/generate-templates.mjs
+for TEMPLATE in public/templates/Plantilla_Importacion_Instrumentos_FPEvalua_2.3.xlsx public/templates/Plantilla_Puente_Additio_FPEvalua_2.4.xlsx; do
+  if [ ! -s "$TEMPLATE" ]; then
+    echo "ERROR: no se pudo generar $TEMPLATE"
+    exit 1
+  fi
+done
+
 if [ ! -f .env ]; then
   cp .env.example .env
   SESSION=$(node -e "console.log(require('node:crypto').randomBytes(48).toString('hex'))")
